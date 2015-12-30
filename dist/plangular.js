@@ -9,7 +9,7 @@ module.exports = function() {
   this.audio = audio;
   //this.currentTime = audio.currentTime;
   //this.duration = audio.duration;
-  
+
   this.play = function(src) {
     if (src != audio.src) { audio.src = src; }
     audio.play();
@@ -34,6 +34,7 @@ module.exports = function() {
     var percent = e.offsetX / e.target.offsetWidth || (e.layerX - e.target.offsetLeft) / e.target.offsetWidth;
     var time = percent * audio.duration || 0;
     audio.currentTime = time;
+    console.log(audio)
   }
 
   this.init = function() {
@@ -71,9 +72,9 @@ module.exports = function(n, options) {
 
   if(!isNaN(secs)){
     if (hours){
-      return hours+':'+mins+':'+secs;  
+      return hours+':'+mins+':'+secs;
     } else {
-      return mins+':'+secs;  
+      return mins+':'+secs;
     };
   } else {
     return '00:00';
@@ -338,70 +339,70 @@ if (typeof module !== 'undefined') module.exports = corslite;
 
 },{}],7:[function(require,module,exports){
 /*!
-	query-string
-	Parse and stringify URL query strings
-	https://github.com/sindresorhus/query-string
-	by Sindre Sorhus
-	MIT License
+  query-string
+  Parse and stringify URL query strings
+  https://github.com/sindresorhus/query-string
+  by Sindre Sorhus
+  MIT License
 */
 (function () {
-	'use strict';
-	var queryString = {};
+  'use strict';
+  var queryString = {};
 
-	queryString.parse = function (str) {
-		if (typeof str !== 'string') {
-			return {};
-		}
+  queryString.parse = function (str) {
+    if (typeof str !== 'string') {
+      return {};
+    }
 
-		str = str.trim().replace(/^(\?|#)/, '');
+    str = str.trim().replace(/^(\?|#)/, '');
 
-		if (!str) {
-			return {};
-		}
+    if (!str) {
+      return {};
+    }
 
-		return str.trim().split('&').reduce(function (ret, param) {
-			var parts = param.replace(/\+/g, ' ').split('=');
-			var key = parts[0];
-			var val = parts[1];
+    return str.trim().split('&').reduce(function (ret, param) {
+      var parts = param.replace(/\+/g, ' ').split('=');
+      var key = parts[0];
+      var val = parts[1];
 
-			key = decodeURIComponent(key);
-			// missing `=` should be `null`:
-			// http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-			val = val === undefined ? null : decodeURIComponent(val);
+      key = decodeURIComponent(key);
+      // missing `=` should be `null`:
+      // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+      val = val === undefined ? null : decodeURIComponent(val);
 
-			if (!ret.hasOwnProperty(key)) {
-				ret[key] = val;
-			} else if (Array.isArray(ret[key])) {
-				ret[key].push(val);
-			} else {
-				ret[key] = [ret[key], val];
-			}
+      if (!ret.hasOwnProperty(key)) {
+        ret[key] = val;
+      } else if (Array.isArray(ret[key])) {
+        ret[key].push(val);
+      } else {
+        ret[key] = [ret[key], val];
+      }
 
-			return ret;
-		}, {});
-	};
+      return ret;
+    }, {});
+  };
 
-	queryString.stringify = function (obj) {
-		return obj ? Object.keys(obj).map(function (key) {
-			var val = obj[key];
+  queryString.stringify = function (obj) {
+    return obj ? Object.keys(obj).map(function (key) {
+      var val = obj[key];
 
-			if (Array.isArray(val)) {
-				return val.map(function (val2) {
-					return encodeURIComponent(key) + '=' + encodeURIComponent(val2);
-				}).join('&');
-			}
+      if (Array.isArray(val)) {
+        return val.map(function (val2) {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(val2);
+        }).join('&');
+      }
 
-			return encodeURIComponent(key) + '=' + encodeURIComponent(val);
-		}).join('&') : '';
-	};
+      return encodeURIComponent(key) + '=' + encodeURIComponent(val);
+    }).join('&') : '';
+  };
 
-	if (typeof define === 'function' && define.amd) {
-		define(function() { return queryString; });
-	} else if (typeof module !== 'undefined' && module.exports) {
-		module.exports = queryString;
-	} else {
-		window.queryString = queryString;
-	}
+  if (typeof define === 'function' && define.amd) {
+    define(function() { return queryString; });
+  } else if (typeof module !== 'undefined' && module.exports) {
+    module.exports = queryString;
+  } else {
+    window.queryString = queryString;
+  }
 })();
 
 },{}],8:[function(require,module,exports){
@@ -416,7 +417,7 @@ var resolve = require('soundcloud-resolve-jsonp');
 var Player = require('audio-player');
 var hhmmss = require('hhmmss');
 
-plangular.directive('plangular', ['$timeout', 'plangularConfig', function($timeout, plangularConfig) {
+plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', function($timeout, plangularConfig, $http) {
 
   var client_id = plangularConfig.clientId;
   var player = new Player();
@@ -437,7 +438,8 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', function($timeo
       scope.index = 0;
       scope.playlist;
       scope.tracks = [];
-
+      scope.currentComments = [];
+      var $elem = angular.element(elem[0]);
       if (!client_id) {
         var message = [
           'You must provide a client_id for Plangular',
@@ -458,6 +460,7 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', function($timeo
         if (track.stream_url) {
           var sep = track.stream_url.indexOf('?') === -1 ? '?' : '&'
           track.src = track.stream_url + sep + 'client_id=' + client_id;
+          track.commentsSrc = track.stream_url.replace(/stream/i, 'comments')  + sep + 'client_id=' + client_id;
         }
         return track;
       }
@@ -478,7 +481,13 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', function($timeo
               });
             }
           });
-        });
+        })
+
+        // resolve({ url: 'https://api.soundcloud.com/tracks/93014855/comments', client_id: client_id }, function(err, res) {
+        //   if (err) { console.error(err); }
+        //   console.log(res);
+        // });
+        // console.log(scope.tracks);
       }
 
       scope.play = function(i) {
@@ -499,6 +508,16 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', function($timeo
           scope.track = scope.tracks[i];
         }
         player.playPause(scope.track.src);
+        if (scope.track.comments) return;
+        getComments(scope.track);
+      };
+
+      // var commentMap = [];
+      var getComments = function (track) {
+        var config = { method: 'GET', url: track.commentsSrc };
+        $http(config).then(function (res) {
+          track.comments = res.data;
+        });
       };
 
       scope.previous = function() {
@@ -523,6 +542,11 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', function($timeo
         if (scope.track.src === player.audio.src) {
           scope.player.seek(e);
         }
+      };
+
+      scope.setPosition = function(timestamp){
+        var width = angular.element(elem[0]).find('progress')[0].getBoundingClientRect().width;
+        return '' + ( (timestamp/1000).toFixed(1) / scope.duration * width ).toFixed(1) + 'px';
       };
 
       player.audio.addEventListener('timeupdate', function() {
@@ -564,3 +588,4 @@ module.exports = 'plangular';
 
 },{"audio-player":1,"hhmmss":3,"soundcloud-resolve-jsonp":4}]},{},[8])(8)
 });
+
