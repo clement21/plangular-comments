@@ -438,8 +438,10 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
       scope.index = 0;
       scope.playlist;
       scope.tracks = [];
-      scope.currentComments = [];
-      var $elem = angular.element(elem[0]);
+      scope.currentComments = [
+      {body:'x'},
+      {body:'y'},
+      {body:'1'}];
       if (!client_id) {
         var message = [
           'You must provide a client_id for Plangular',
@@ -554,6 +556,7 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
           $timeout(function() {
             scope.currentTime = player.audio.currentTime;
             scope.duration = player.audio.duration;
+            showComments();
           });
         }
       });
@@ -563,6 +566,24 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
           scope.next();
         }
       });
+
+      var showComments = function() {
+        var currentPos = player.audio.currentTime * 1000;
+        scope.$apply(function() {
+          scope.currentComments = _.filter(scope.track.comments, function(comment){
+            return currentPos >= comment.timestamp && currentPos <= comment.timestamp + 4000;
+          });
+
+
+        })
+
+        if(scope.currentComments.length > 0){
+          console.log('*************************');
+          console.log(scope.currentComments);
+        }else{
+          console.log('none');
+        }
+      }
 
     }
 
