@@ -88,17 +88,14 @@
           ng-click="seek($event)"
           ng-value="currentTime / duration || 0">
           {{ currentTime / duration }}
-        </progress>  
+        </progress>
         <div class="comments-bar">
-          <li ng-repeat="comment in track.comments" ng-bind="comment.body" ng-style="{left:setPosition(comment.timestamp)}"></li>
+          <li ng-repeat="comment in track.comments" ng-style="{left:setPosition(comment.timestamp)}"></li>
+        </div>
+        <div class="comments-display">
+          <li ng-repeat="comment in currentComments" ng-bind="comment.body"></li>
         </div>
       </div>
-        <br />
-        <br />
-        <br />
-        <div>
-          <li ng-repeat="comment in currentComments" ng-bind="comment.body"></li>
-        </div>      
     </div>
 
     <footer class="py2 border-top">

@@ -577,12 +577,15 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
 
         })
 
+
         if(scope.currentComments.length > 0){
           console.log('*************************');
           console.log(scope.currentComments);
         }else{
           console.log('none');
         }
+
+
       }
 
     }
