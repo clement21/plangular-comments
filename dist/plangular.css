@@ -33,26 +33,37 @@ code {
 	/*display: flex;*/
 	width: 100%;
 }
-
+.comments-display{
+  position: relative;
+  top: 80px;
+  height: 60px;
+}
+.comments-display ul{
+  padding: 0px;
+}
 .comments-display li{
 	list-style-type: none;
+  font-size: 12px;
 }
 .progress-and-comments progress, .progress-and-comments div {
-	flex-direction: column;
+  flex-direction: column;
 }
 .comments-bar {
-	position: relative;
-	display: block;
-	width: 100%;
-	/*height: .5625rem;*/
+  position: relative;
+  display: block;
+  width: 100%;
+  /*height: .5625rem;*/
 }
 .comments-bar li {
-	position: absolute;
-    list-style-type: none;
+  position: absolute;
+  list-style-type: none;
 }
 
 
-.comments-bar li img{
-	width: 30px;
+.comment-pic{
+	width: 20px;
 }
 
+.comment-username{
+  font-weight: bold;
+}
