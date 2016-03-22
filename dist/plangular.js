@@ -413,6 +413,8 @@ if (typeof module !== 'undefined') module.exports = corslite;
 'use strict';
 
 var plangular = angular.module('plangular', []);
+var ngAnimate = angular.module('ngAnimate', []);
+
 var resolve = require('soundcloud-resolve-jsonp');
 var Player = require('audio-player');
 var hhmmss = require('hhmmss');
@@ -438,10 +440,7 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
       scope.index = 0;
       scope.playlist;
       scope.tracks = [];
-      scope.currentComments = [
-      /*{body:'x'},
-      {body:'y'},
-      {body:'1'}*/];
+      scope.currentComments = [];
       if (!client_id) {
         var message = [
           'You must provide a client_id for Plangular',
@@ -484,14 +483,26 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
             }
           });
         })
-
-        // resolve({ url: 'https://api.soundcloud.com/tracks/93014855/comments', client_id: client_id }, function(err, res) {
-        //   if (err) { console.error(err); }
-        //   console.log(res);
-        // });
-        // console.log(scope.tracks);
       }
 
+      scope.getUser = function(userId){
+        resolve({ url: 'https://api.soundcloud.com/users/' + userId, client_id: client_id }, function(err, res) {
+          if (err) {
+            console.log('Could not get user');
+            console.error(err);
+          }
+          console.log('no error');
+          console.log(res);
+          scope.$apply(function(){
+            scope.profile = {
+              username: res.username,
+              followers_count: res.followers_count,
+              followings_count: res.followings_count
+            }
+          })
+        });
+      }
+      scope.profile = "foo";
       scope.play = function(i) {
         if (typeof i !== 'undefined' && scope.tracks.length) {
           scope.index = i;

@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="dist/plangular.css">
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
+<!--  <script src="dist/angular-animate.js"></script> -->
+
   <script src="dist/plangular.min.js"></script>
   <script src="dist/lodash.js"></script>
   <script src="dist/plangular.js"></script>
@@ -65,19 +67,29 @@
         <samp class="h6">{{ currentTime | hhmmss }} / {{ duration | hhmmss }}</samp>
         <div class="progress-and-comments">
           <progress class="progress" ng-click="seek($event)" ng-value="currentTime / duration || 0"> {{ currentTime / duration }} </progress>
-          <div ng-if="player.playing == track.src" class="comments-bar">
+          <div class="comments-bar">
             <ul>
               <li ng-repeat="comment in track.comments" ng-style="{left:setPosition(comment.timestamp)}"><img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" /></li>
             </ul>
           </div>
-          <div ng-if="player.playing == track.src" class="comments-display">
+          <!-- <div ng-if="player.playing == track.src" class="comments-display"> -->
+          <div class="comments-display">
             <ul>
-              <li ng-repeat="comment in currentComments">
-                <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" />
+              <li ng-repeat="comment in currentComments" class="fade">
+                <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" ng-click="getUser(comment.user.id)" />
+<!--               <a href="#" tooltips tooltip-template="tooltip">
+                <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" ng-mouseover="getUser(comment.user.id)" />
+              </a> -->
                 <span class="comment-username" ng-bind="comment.user.username"></span>:
                 <span ng-bind="comment.body"></span>
               </li>
             </ul>
+          </div>
+          <div class="profile-display">
+            <span>Username: </span><span ng-bind="profile.username"></span> <br/>
+            <span>Followers: </span><span ng-bind="profile.followers_count"></span> <br/>
+            <span>Following: </span><span ng-bind="profile.followings_count"></span> <br/>
+
           </div>
         </div>
       </div>
@@ -100,7 +112,8 @@
               <li ng-repeat="comment in track.comments" ng-style="{left:setPosition(comment.timestamp)}"><img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" /></li>
             </ul>
           </div>
-          <div ng-if="player.playing == track.src" class="comments-display">
+          <!-- <div ng-if="player.playing == track.src" class="comments-display"> -->
+          <div class="comments-display">
             <ul>
               <li ng-repeat="comment in currentComments">
                 <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" />
@@ -125,7 +138,7 @@
   </div>
 
 <script>
-  var app = angular.module('app', ['plangular'])
+  var app = angular.module('app', ['plangular'/*, 'ngAnimate'*/])
     .config(function(plangularConfigProvider){
       plangularConfigProvider.clientId = 'aeb5b3f63ac0518f8362010439a77ca1';
     });
