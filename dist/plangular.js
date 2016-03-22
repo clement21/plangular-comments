@@ -488,7 +488,7 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
       scope.getUser = function(userId){
         resolve({ url: 'https://api.soundcloud.com/users/' + userId, client_id: client_id }, function(err, res) {
           if (err) {
-            console.log('Could not get user');
+            console.log('Could not get user.');
             console.error(err);
           }
           console.log('no error');
