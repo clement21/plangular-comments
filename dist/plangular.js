@@ -5,7 +5,7 @@ var audio = require('./lib/audio');
 module.exports = function() {
 
   this.playing = false;
-
+  this.muted = false;
   this.audio = audio;
   //this.currentTime = audio.currentTime;
   //this.duration = audio.duration;
@@ -14,6 +14,7 @@ module.exports = function() {
     if (src != audio.src) { audio.src = src; }
     audio.play();
     this.playing = src;
+    console.log(this)
   }
 
   this.pause = function() {
@@ -28,13 +29,14 @@ module.exports = function() {
       this.pause();
     }
   }
-
+  this.muteUnmute = function(){
+    audio.muted = audio.muted == false ? true : false;
+  }
   this.seek = function(e) {
     if (!audio.readyState) return false;
     var percent = e.offsetX / e.target.offsetWidth || (e.layerX - e.target.offsetLeft) / e.target.offsetWidth;
     var time = percent * audio.duration || 0;
     audio.currentTime = time;
-    console.log(audio)
   }
 
   this.init = function() {
@@ -491,8 +493,6 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
             console.log('Could not get user.');
             console.error(err);
           }
-          console.log('no error');
-          console.log(res);
           scope.$apply(function(){
             scope.profile = {
               username: res.username,
@@ -502,7 +502,9 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
           })
         });
       }
-      scope.profile = "foo";
+
+      scope.profile = "profile";
+      
       scope.play = function(i) {
         if (typeof i !== 'undefined' && scope.tracks.length) {
           scope.index = i;
@@ -525,7 +527,6 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
         getComments(scope.track);
       };
 
-      // var commentMap = [];
       var getComments = function (track) {
         var config = { method: 'GET', url: track.commentsSrc };
         $http(config).then(function (res) {
@@ -556,7 +557,14 @@ plangular.directive('plangular', ['$timeout', 'plangularConfig', '$http', functi
           scope.player.seek(e);
         }
       };
+      scope.mute = function(){
+        scope.player.mute();
+      }
+      scope.muteUnmute = function(){
+        player.muted = player.muted == false ? true : false;
+        player.muteUnmute();
 
+      }
       scope.setPosition = function(timestamp){
         var width = angular.element(elem[0]).find('progress')[0].getBoundingClientRect().width;
         return '' + ( (timestamp/1000).toFixed(1) / scope.duration * width ).toFixed(1) + 'px';

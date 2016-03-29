@@ -76,10 +76,7 @@
           <div class="comments-display">
             <ul>
               <li ng-repeat="comment in currentComments" class="fade">
-                <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" ng-click="getUser(comment.user.id)" />
-<!--               <a href="#" tooltips tooltip-template="tooltip">
-                <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" ng-mouseover="getUser(comment.user.id)" />
-              </a> -->
+                <img class="comment-pic circle" ng-src="{{comment.user.avatar_url}}" ng-hover="getUser(comment.user.id)" />
                 <span class="comment-username" ng-bind="comment.user.username"></span>:
                 <span ng-bind="comment.body"></span>
               </li>
@@ -89,12 +86,12 @@
             <span>Username: </span><span ng-bind="profile.username"></span> <br/>
             <span>Followers: </span><span ng-bind="profile.followers_count"></span> <br/>
             <span>Following: </span><span ng-bind="profile.followings_count"></span> <br/>
-
           </div>
         </div>
       </div>
 
       <div plangular="https://soundcloud.com/noisia/bijna-fijnmp3" class="p2 mb3 flex flex-center bg-darken-2 rounded">
+
         <button ng-click="playPause()" title="Play/Pause" class="flex-none h2 mr2 button button-transparent button-grow rounded"> 
           <svg ng-if="player.playing !== track.src" class="icon geomicon" data-icon="play" viewbox="0 0 32 32" width="32" height="32" style="fill: currentcolor;">
             <path d="M4 4 L28 16 L4 28 z "></path>
@@ -135,10 +132,16 @@
       <svg class="icon geomicon" data-icon="pause" viewBox="0 0 32 32" width="32" height="32" style="fill:currentcolor;top:-.0625em"><path d="M4 4 H12 V28 H4 z M20 4 H28 V28 H20 z "></path></svg>
       Pause
     </button>
+          <button ng-click="muteUnmute()" ng-if="player.playing"
+            class="button button-small black bg-teal vhs-bottom">
+            <span ng-if="player.muted == false">Mute</span>
+            <span ng-if="player.muted == true">Unmute</span>
+        </button>
+
   </div>
 
 <script>
-  var app = angular.module('app', ['plangular'/*, 'ngAnimate'*/])
+  var app = angular.module('app', ['plangular', 'ngAnimate'])
     .config(function(plangularConfigProvider){
       plangularConfigProvider.clientId = 'aeb5b3f63ac0518f8362010439a77ca1';
     });
